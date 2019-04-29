@@ -21,13 +21,17 @@ def test():
 @app.route("/test_upload", methods=["POST"])
 def test_upload():
   file = request.files['image']
-  f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+  filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
   
   file.save(f)
   
 #  do some ML on the file and get classification
   
   classification = "100p a hot dog"
+  
+#  once classified, delete image
+  
+  os.remove(filename)
   
   return render_template("test.html", classification = classification)
 
