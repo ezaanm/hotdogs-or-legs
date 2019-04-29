@@ -6,11 +6,17 @@
   </head>
   <body>
     <h1>
-      i've pulled an all nighter training for this test
+      i pulled an all nighter training for this test
     </h1>
     <h3>
       jk it was more like 57 seconds
     </h3>
-    allow uploading of photos here
+    
+    <form action="/test_upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="image">
+      <input type="submit" value="upload it, dog">
+    </form>
+    
+    {{classification}}
   </body>
 </html>
