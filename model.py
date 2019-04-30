@@ -11,8 +11,8 @@ from keras.utils import np_utils
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras import backend as K 
 
-#https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d
-#from data import
+#resource: https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d
+
 def load_and_train_model():
     x_train = "./data/train"
     x_test = "./data/test"
@@ -23,12 +23,10 @@ def load_and_train_model():
     nb_train_samples = 114 
     nb_test_samples = 4
 
-
     if K.image_data_format() == 'channels_first':
         input_shape = (3, img_width, img_height)
     else:
         input_shape = (img_width, img_height, 3)
-
 
     model = Sequential()
     model.add(Convolution2D(32, (3,3), input_shape=input_shape))
@@ -83,9 +81,23 @@ def load_and_train_model():
         validation_steps = nb_test_samples // batch_size
     )
 
-    # model.fit(x_train)
+    model.save("hd_or_legs.h5")
 
-    return 
+    return model
 
+def load_image(img_url):
+    img = load_img('./data/test/hot_dogs/0001.jpg', target_size=(150,150))
+    img_tensor = img_to_array(img)
+    img_tensor = np.expand_dims(img_tensor, axis=0)
+    img_tensor /= 255.
+    return img_tensor
 
-load_and_train_model()
+def predict_on_image(img_url):
+    img = load_image(img_url)
+    output = np.array2string(model.predict(img)[0])
+    output = round(float(output.strip("[]")))
+    if (output == 0) : print("hotdog")
+    else : print("legs")   
+
+# model = load_and_train_model()
+# predict_on_image('./data/test/hot_dogs/0001.jpg')
