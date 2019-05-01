@@ -85,19 +85,5 @@ def load_and_train_model():
 
     return model
 
-def load_image(img_url):
-    img = load_img('./data/test/hot_dogs/0001.jpg', target_size=(150,150))
-    img_tensor = img_to_array(img)
-    img_tensor = np.expand_dims(img_tensor, axis=0)
-    img_tensor /= 255.
-    return img_tensor
-
-def predict_on_image(img_url):
-    img = load_image(img_url)
-    output = np.array2string(model.predict(img)[0])
-    output = round(float(output.strip("[]")))
-    if (output == 0) : print("hotdog")
-    else : print("legs")   
-
-# model = load_and_train_model()
+load_and_train_model()
 # predict_on_image('./data/test/hot_dogs/0001.jpg')
