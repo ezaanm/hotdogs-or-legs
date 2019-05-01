@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
@@ -13,6 +14,13 @@ def splash():
 @app.route("/fight", methods=["GET"])
 def fight():
   return render_template("fight.html")
+  
+@app.route("/fightPlay", methods=["POST"])
+def fightPlay():
+  index = request.form.get('index')
+  correct = request.form.get('correct')
+  return render_template("fightStart.html")
+#  return render_template("fight.html", imageIndex=xxx, imageLink=, correct=)
 
 @app.route("/test", methods=["GET"])
 def test():
