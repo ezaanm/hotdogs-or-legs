@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from flask import Flask, render_template, request, jsonify
 import numpy as np
 
@@ -12,10 +13,9 @@ from keras import backend as K
 app = Flask(__name__)
 
 fightPhotos = []
-fightLabels = ["hotdogs", "hotdogs", "hotdogs", "hotdogs", "legs", "legs", "legs", "legs"] 
-
-UPLOAD_FOLDER = os.path.basename('uploads')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+fightLabels = ["hotdogs", "hotdogs", "hotdogs", "hotdogs", "legs", "legs", "legs", "legs"]
+startTime = 0
+endTime = 0
 
 @app.route("/")
 def splash():
@@ -40,11 +40,17 @@ def fightPlay():
   index = int(request.form.get('index'))
   correct = int(request.form.get('correct'))
   response = request.form.get('response')
-  if (index > 0 and response == fightLabels[index - 1]): 
+  if index > 0 and response == fightLabels[index - 1]: 
     correct += 1;
+  elif index == 0:
+    global startTime
+    startTime = time.time()
     
   if index == 8:
-    return render_template("fightSummary.html", score=correct)
+    global endTime
+    endTime = time.time()
+    elapsedTime = endTime - startTime
+    return render_template("fightSummary.html", score=correct, time=elapsedTime)
   
   return render_template("fightStart.html", nextIndex=index+1, imageLink=fightPhotos[index], score=correct)
 
@@ -55,17 +61,14 @@ def test():
 @app.route("/test_upload", methods=["POST"])
 def test_upload():
   file = request.files['image']
-  filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-  
+  filename = os.path.join("static/uploads/", file.filename)
   file.save(filename)
   
-#  do some ML on the file and get classification
-  
-  classification = "100p a hot dog"
+  classification = predict(filename)
 
-  os.remove(filename)
+#  os.remove(filename) - we are going to learn about your dog preferences and target u with ads!
   
-  return render_template("test.html", classification = classification)
+  return render_template("test.html", imageLink = filename, classification = classification)
 
   #call predict with the image route from wherever u need to get the response
   #"hotdogs" or "legs"
@@ -103,9 +106,7 @@ def get_accuracy(pred, actual):
 #  once classified, delete image
 
 if __name__ == "__main__":
-  fightPhotos = [os.path.join("static/", f) for f in os.listdir("static/") if os.path.isfile(os.path.join("static/", f))]
-  fightPhotos.remove("static/.DS_Store")
-  fightPhotos.remove("static/hd.png")
-  fightPhotos.remove("static/leg.png")
+  fightPhotos = [os.path.join("static/fight/", f) for f in os.listdir("static/fight/") if os.path.isfile(os.path.join("static/fight/", f))]
+  fightPhotos.remove("static/fight/.DS_Store")
   fightPhotos.sort()
   app.run(port=5000, debug=True)
