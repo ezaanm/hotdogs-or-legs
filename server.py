@@ -37,11 +37,16 @@ def fight():
   
 @app.route("/fightPlay", methods=["POST"])
 def fightPlay():
-  print(fightPhotos)
   index = int(request.form.get('index'))
   correct = int(request.form.get('correct'))
-  return render_template("fightStart.html", imageIndex=index+1, imageLink="", score=correct)
-#  return render_template("fight.html", imageIndex=xxx, imageLink=, correct=)
+  response = request.form.get('response')
+  if (index > 0 and response == fightLabels[index - 1]): 
+    correct += 1;
+    
+  if index == 8:
+    return render_template("fightSummary.html", score=correct)
+  
+  return render_template("fightStart.html", nextIndex=index+1, imageLink=fightPhotos[index], score=correct)
 
 @app.route("/test", methods=["GET"])
 def test():
@@ -98,7 +103,9 @@ def get_accuracy(pred, actual):
 #  once classified, delete image
 
 if __name__ == "__main__":
-  fightPhotos = [f for f in os.listdir("static/") if os.path.isfile(os.path.join("static/", f))]
-  fightPhotos.remove(".DS_Store")
+  fightPhotos = [os.path.join("static/", f) for f in os.listdir("static/") if os.path.isfile(os.path.join("static/", f))]
+  fightPhotos.remove("static/.DS_Store")
+  fightPhotos.remove("static/hd.png")
+  fightPhotos.remove("static/leg.png")
   fightPhotos.sort()
   app.run(port=5000, debug=True)

@@ -26,12 +26,14 @@
       <img src="{{imageLink}}" alt="pic">
       <form method="POST" action="/fightPlay">
         <input type = "hidden" name = "response" value = "hotdogs" />
-        <input type = "hidden" name = "index" value = "{{imageIndex}}" />
+        <input type = "hidden" name = "index" value = "{{nextIndex}}" />
+        <input type = "hidden" name = "correct" value = "{{score}}" />
         <button type="submit">hotdogs</button>
       </form>
       <form method="POST" action="/fightPlay">
-        <input type = "hidden" name = "response" value = "hotdogs" />
-        <input type = "hidden" name = "index" value = "{{imageIndex}}" />
+        <input type = "hidden" name = "response" value = "legs" />
+        <input type = "hidden" name = "index" value = "{{nextIndex}}" />
+        <input type = "hidden" name = "correct" value = "{{score}}" />
         <button type="submit">legs</button>
       </form>
       Your Score is: {{score}}
