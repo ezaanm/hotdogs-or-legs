@@ -57,7 +57,7 @@ def test_upload():
 #  do some ML on the file and get classification
   
   classification = "100p a hot dog"
-  
+
   os.remove(filename)
   
   return render_template("test.html", classification = classification)
@@ -80,11 +80,23 @@ def predict(img_url):
     if (output == 0) : return "hotdogs"
     else : return "legs"
 
-#example
-#predict('./data/train/legs/0061.jpg')
+#returns time and predictions in a list
+def time_and_prediction_for_images(images):
+  t0 = time.time()
+  predictions = []
+  for img in images:
+    predictions += predict(img)
+  tf = time.time() - t0
+  return [tf, predictions]
+
+def get_accuracy(pred, actual):
+  pred_ = np.array(pred)
+  actual_ = np.array(actual)
+  accuracy = (np.sum(pred_ == actual_))/len(pred_)
+  return accuracy
   
 #  once classified, delete image
-  
+
 if __name__ == "__main__":
   fightPhotos = [f for f in os.listdir("static/") if os.path.isfile(os.path.join("static/", f))]
   fightPhotos.remove(".DS_Store")
