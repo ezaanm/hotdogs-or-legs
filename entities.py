@@ -42,6 +42,6 @@ class Leaderboard:
   def html(self):
     string = ""
     for t in self.timeArr:
-      string += "<li>" + str(t) + "</li>"
+      string += "<li>" + str(t[0]) + ", "+ str(t[1]) + "</li>"
     
     return string

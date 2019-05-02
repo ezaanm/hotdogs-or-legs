@@ -20,8 +20,8 @@ def load_train_save():
 
     #target img dimensions, training/testing sample details
     img_width, img_height = 150, 150
-    nb_train_samples = 114 
-    nb_test_samples = 4
+    nb_train_samples = 126 
+    nb_test_samples = 11
 
     #channel specs
     if K.image_data_format() == 'channels_first':
