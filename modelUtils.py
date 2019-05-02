@@ -8,6 +8,8 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 from keras.utils import np_utils
 from keras import backend as K 
   
+model = load_model('./hd_or_legs.h5')
+
 def load_image(img_url):
     img = load_img(img_url, target_size=(150,150))
     img_tensor = img_to_array(img)
@@ -18,7 +20,6 @@ def load_image(img_url):
 #call predict with the image route from wherever u need to get the response
 #"hotdogs" or "legs"
 def predict(img_url):
-    model = load_model('./hd_or_legs.h5')
     img = load_image(img_url)
     output = np.array2string(model.predict(img)[0])
     output = round(float(output.strip("[]")))
