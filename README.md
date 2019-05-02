@@ -10,6 +10,15 @@ https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d
 ## pip install -r requirements.txt
 ## python sever.py
 
+## Check your KERAS BACKEND
+if Theano -> leave it be
+if Tensorflow -> Follow The well crafted guide "To change Keras Backend" below
+
+## To change Keras Backend
+go to your room directiory: /Users/yourname/.keras/
+find the keras.json file
+edit the backend to say theano
+
 # Endpoint SZN yo
 ## get '/'
 renders the home page 
