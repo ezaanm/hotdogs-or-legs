@@ -11,7 +11,7 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 from keras.utils import np_utils
 from keras import backend as K 
 
-from modelUtils import load_img, predict, time_and_prediction_for_images, get_accuracy
+from modelUtils import load_image, predict, time_and_prediction_for_images, get_accuracy
 from entities import Leaderboard
 
 app = Flask(__name__)
@@ -27,6 +27,7 @@ machineAccuracy = 4;
 
 @app.route("/")
 def splash():
+  K.clear_session()
   return render_template("splash.html")
 
 def shuffleFight():
@@ -57,6 +58,7 @@ def leaderboard():
   name = request.form.get('name')
   time = float(request.form.get('time'))
   lead.put(name, time)
+  K.clear_session()
   return render_template("splash.html")
   
 @app.route("/fightPlay", methods=["POST"])
@@ -92,7 +94,7 @@ def test_upload():
   file = request.files['image']
   filename = os.path.join("static/uploads/", file.filename)
   file.save(filename)
-  
+  K.clear_session()
   classification = predict(filename)
   K.clear_session()
 #  os.remove(filename) - we are going to learn about your dog preferences and target u with ads!
