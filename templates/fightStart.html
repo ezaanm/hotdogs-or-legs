@@ -8,6 +8,17 @@
     <h1>
       so u wanna tussle?
     </h1>
-      pictures
+      <img src="{{imageLink}}" alt="pic">
+      <form method="POST" action="/fightPlay">
+        <input type = "hidden" name = "response" value = "hotdogs" />
+        <input type = "hidden" name = "index" value = "{{imageIndex}}" />
+        <button type="submit">hotdogs</button>
+      </form>
+      <form method="POST" action="/fightPlay">
+        <input type = "hidden" name = "response" value = "hotdogs" />
+        <input type = "hidden" name = "index" value = "{{imageIndex}}" />
+        <button type="submit">legs</button>
+      </form>
+      Your Score is: {{score}}
   </body>
 </html>
