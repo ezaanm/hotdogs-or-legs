@@ -2,13 +2,15 @@
 ## the age old question finally answered - hot dogs or legs?
 
 ## these are our References, and theres some photos photos from google missing:
-https://towardsdatascience.com/embedding-machine-learning-models-to-web-apps-part-1-6ab7b55ee428
-https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html 
-https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d
+Understanding ML for images:
+- https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d
+- https://towardsdatascience.com/embedding-machine-learning-models-to-web-apps-part-1-6ab7b55ee428
+- https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html 
+Images: https://github.com/daj/legs-or-hotdogs-images 
 
 # RUNNING THE APP 
 ## pip install -r requirements.txt
-## python sever.py
+## python server.py
 
 ## Check your KERAS BACKEND
 if Theano -> leave it be
@@ -33,6 +35,7 @@ throws on over to page where you upload an image and have it be classified
 ## post '/leaderboard'
 body contains name and time of your score if you got 8/8 classifications right
 you pop yourself on the Leadboard via the Leaderboard class with this request
+restarts everytime the server restarts
 
 ## post '/fightPlay '
 Triggers the start of the game and loads the next image from the previously shuffled array
@@ -44,9 +47,12 @@ classification algorithm on it and displays the results
 
 # some architecture jazzzZZz
 ## ML Jawn - Sara
-data - holds the test and train photos for the model
-model.py and hd_or_legs.h5 are the model
+data - holds the test and train photos for the model (pulled from a github repository)
+     - testing data also holds the sample images given for the test
+model.py and hd_or_legs.h5 are the model -- run model.py to compile and save the model
+     - the model is saved to the file hd_or_legs.h5 and loaded for predictions
 modelUtils is list of functions used by the rest of the app to call on the model to predict for certain situations
+     - the predict function utilizes the loaded model to predict upon the tensorized images (which is done by load_image)
 
 ## Web Slingin - Ezaan
 server - hold main app and routes for Flask app, and main web interactions
