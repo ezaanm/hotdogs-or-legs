@@ -16,6 +16,7 @@ from entities import Leaderboard
 
 app = Flask(__name__)
 
+#create global variables
 lead = Leaderboard()
 
 fightPhotos = []
@@ -25,11 +26,12 @@ fightEndTime = 0
 machineFightTime = 0
 machineAccuracy = 4
 
+#splash screen
 @app.route("/")
 def splash():
-  # K.clear_session()
   return render_template("splash.html")
-
+  
+#shuffles photos and labels by same index
 def shuffleFight():
   p = np.random.permutation(8)
   global fightPhotos, fightLabels
@@ -38,6 +40,7 @@ def shuffleFight():
   fightPhotos = fightPhotos[p]
   fightLabels = fightLabels[p]
   
+#begin the classifiers run on the fight photos
 def machineFight():
   global machineFightTime, machineAccuracy
   tf, predictions = time_and_prediction_for_images(fightPhotos)
@@ -47,20 +50,22 @@ def machineFight():
   
 machineFightThread = threading.Thread(target=machineFight)
     
+#start of fight screen
 @app.route("/fight", methods=["GET"])
 def fight():
   shuffleFight()
   return render_template("fight.html")
   
+#update the leaderboard
 @app.route("/leaderboard", methods=["POST"])
 def leaderboard():
   global lead
   name = request.form.get('name')
   time = float(request.form.get('time'))
   lead.put(name, time)
-  # K.clear_session()
   return render_template("splash.html")
   
+#move next image and update scores in the fight
 @app.route("/fightPlay", methods=["POST"])
 def fightPlay():
   global fightStartTime, fightEndTime, machineFightThread
@@ -85,24 +90,27 @@ def fightPlay():
   
   return render_template("fightStart.html", nextIndex=index+1, imageLink=fightPhotos[index], score=correct)
 
+#go to the test page
 @app.route("/test", methods=["GET"])
 def test():
   return render_template("test.html")
   
+#upload a photo
 @app.route("/testUpload", methods=["POST"])
 def test_upload():
   file = request.files['image']
   filename = os.path.join("static/uploads/", file.filename)
   file.save(filename)
-  K.clear_session()
   classification = predict(filename)
-  K.clear_session()
 #  os.remove(filename) - we are going to learn about your dog preferences and target u with ads!
   
   return render_template("test.html", imageLink = filename, classification = classification)
 
 if __name__ == "__main__":
   fightPhotos = [os.path.join("static/fight/", f) for f in os.listdir("static/fight/") if os.path.isfile(os.path.join("static/fight/", f))]
-  #fightPhotos.remove("static/fight/.DS_Store")
+  
+  if (os.path.isfile(os.path.join("static/fight/", ".DS_Store"))):
+    fightPhotos.remove("static/fight/.DS_Store")
+    
   fightPhotos.sort()
   app.run(port=5000, debug=True)

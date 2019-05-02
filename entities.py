@@ -25,6 +25,7 @@ class Leaderboard:
   def __init__(self):
     self.timeArr = []
     
+  #sorts based on value each time something is put, keeps top 5
   def put(self, name, time):
     if len(self.timeArr) > 0 and time < self.timeArr[-1][1]:
       if len(self.timeArr) == 5:
