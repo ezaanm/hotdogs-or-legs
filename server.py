@@ -11,11 +11,15 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 from keras.utils import np_utils
 from keras import backend as K 
 
+from modelUtils import load_img, predict, time_and_prediction_for_images, get_accuracy
+from entities import Leaderboard
+
 app = Flask(__name__)
+
+lead = Leaderboard()
 
 fightPhotos = []
 fightLabels = ["hotdogs", "hotdogs", "hotdogs", "hotdogs", "legs", "legs", "legs", "legs"]
-machineFightThread = threading.Thread(target=machineFight)
 fightStartTime = 0
 fightEndTime = 0
 machineFightTime = 0;
@@ -39,11 +43,21 @@ def machineFight():
   accuracy = get_accuracy(predictions, fightLabels)
   machineAccuracy = accuracy * len(fightLabels)
   machineFightTime = tf
+  
+machineFightThread = threading.Thread(target=machineFight)
     
 @app.route("/fight", methods=["GET"])
 def fight():
   shuffleFight()
   return render_template("fight.html")
+  
+@app.route("/leaderboard", methods=["POST"])
+def leaderboard():
+  global lead
+  name = request.form.get('name')
+  time = float(request.form.get('time'))
+  lead.put(name, time)
+  return render_template("splash.html")
   
 @app.route("/fightPlay", methods=["POST"])
 def fightPlay():
@@ -65,7 +79,7 @@ def fightPlay():
       time.sleep(1)
     
     machineFightThread.join()
-    return render_template("fightSummary.html", score=correct, time=elapsedTime, maAcc = machineAccuracy, maTime = machineFightTime)
+    return render_template("fightSummary.html", score=correct, time=elapsedTime, maAcc = machineAccuracy, maTime = machineFightTime, leaderboard=lead)
   
   return render_template("fightStart.html", nextIndex=index+1, imageLink=fightPhotos[index], score=correct)
 
@@ -80,45 +94,9 @@ def test_upload():
   file.save(filename)
   
   classification = predict(filename)
-
 #  os.remove(filename) - we are going to learn about your dog preferences and target u with ads!
   
   return render_template("test.html", imageLink = filename, classification = classification)
-
-  #call predict with the image route from wherever u need to get the response
-  #"hotdogs" or "legs"
-
-def load_image(img_url):
-    img = load_img(img_url, target_size=(150,150))
-    img_tensor = img_to_array(img)
-    img_tensor = np.expand_dims(img_tensor, axis=0)
-    img_tensor /= 255.
-    return img_tensor
-
-def predict(img_url):
-    model = load_model('./hd_or_legs.h5')
-    img = load_image(img_url)
-    output = np.array2string(model.predict(img)[0])
-    output = round(float(output.strip("[]")))
-    if (output == 0) : return "hotdogs"
-    else : return "legs"
-
-#returns time and predictions in a list
-def time_and_prediction_for_images(images):
-  t0 = time.time()
-  predictions = []
-  for img in images:
-    predictions.append(predict(img))
-  tf = time.time() - t0
-  return tf, predictions
-
-def get_accuracy(pred, actual):
-  pred_ = np.array(pred)
-  actual_ = np.array(actual)
-  accuracy = (np.sum(pred_ == actual_))/len(pred_)
-  return accuracy
-  
-#  once classified, delete image
 
 if __name__ == "__main__":
   fightPhotos = [os.path.join("static/fight/", f) for f in os.listdir("static/fight/") if os.path.isfile(os.path.join("static/fight/", f))]

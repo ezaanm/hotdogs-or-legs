@@ -21,21 +21,31 @@
           </div>
         </div>
     <h1>
-      so u wanna tussle?
+      so u think u can tussle?
     </h1>
-      <img src="{{imageLink}}" alt="pic">
-      <form method="POST" action="/fightPlay">
-        <input type = "hidden" name = "response" value = "hotdogs" />
-        <input type = "hidden" name = "index" value = "{{nextIndex}}" />
-        <input type = "hidden" name = "correct" value = "{{score}}" />
-        <button type="submit">hotdogs</button>
-      </form>
-      <form method="POST" action="/fightPlay">
-        <input type = "hidden" name = "response" value = "legs" />
-        <input type = "hidden" name = "index" value = "{{nextIndex}}" />
-        <input type = "hidden" name = "correct" value = "{{score}}" />
-        <button type="submit">legs</button>
-      </form>
-      Your Score is: {{score}}
+    <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <img src="{{imageLink}}" alt="pic" class="img-fluid">
+      </div>
+      <div class="col text-center vcenter">
+        <form method="POST" action="/fightPlay">
+          <input type = "hidden" name = "response" value = "hotdogs" />
+          <input type = "hidden" name = "index" value = "{{nextIndex}}" />
+          <input type = "hidden" name = "correct" value = "{{score}}" />
+          <button type="submit" class="btn btn-outline-primary">hotdogs</button>
+        </form>
+        <br />
+        <form method="POST" action="/fightPlay">
+          <input type = "hidden" name = "response" value = "legs" />
+          <input type = "hidden" name = "index" value = "{{nextIndex}}" />
+          <input type = "hidden" name = "correct" value = "{{score}}" />
+          <button type="submit" class="btn btn-outline-secondary">legs</button>
+        </form>
+        <br />
+        Your Score is: {{score}}
+      </div>
+    </div>
+    </div>
   </body>
 </html>

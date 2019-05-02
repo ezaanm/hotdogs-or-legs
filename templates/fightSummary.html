@@ -21,16 +21,40 @@
           </div>
       </div>
     <h1>
-      so u wanna tussle?
+      the tussle has ended
     </h1>
     
-    Your final score was: {{score}}/8
-    Your time was: {{time}} seconds
-    
-    The machines had score: {{maAcc}}/8
-    The machines time was: {{maTime}} seconds
-    
-    <h3>Leaderboard</h3>
-    
+    <div class="container">
+      <div class="row">
+        <div class="column text">
+        
+          Your final score was: <span class="badge badge-secondary">{{score}}/8</span>
+          <br />
+          Your time was: <span class="badge badge-secondary">{{time}} seconds</span>
+          <br />
+          The machines had score: <span class="badge badge-secondary">{{maAcc}}/8</span>
+          <br />
+          The machines time was: <span class="badge badge-secondary">{{maTime}} seconds</span>
+        </div>
+        
+        <div class="column text-center">
+          <h3>Leaderboard</h3>
+          {%if score == 8%}
+            <form method="POST" action="/leaderboard">
+              <input type = "text" name = "name" value = "" />
+              <input type = "hidden" name = "time" value = "{{time}}" />
+              <button type="submit">submit your quick speed</button>
+            </form>
+          {%endif%}
+          
+          {{leaderboard.html()|safe}}
+        </div>
+        <div class="column text-center">
+          <form method="GET" action="/">
+            <button type="submit" class="btn btn-outline-secondary">Take Me Home Country Road</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
