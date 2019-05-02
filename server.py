@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import threading
 from flask import Flask, render_template, request, jsonify
 import numpy as np
 
@@ -14,8 +15,11 @@ app = Flask(__name__)
 
 fightPhotos = []
 fightLabels = ["hotdogs", "hotdogs", "hotdogs", "hotdogs", "legs", "legs", "legs", "legs"]
-startTime = 0
-endTime = 0
+machineFightThread = threading.Thread(target=machineFight)
+fightStartTime = 0
+fightEndTime = 0
+machineFightTime = 0;
+machineAccuracy = 4;
 
 @app.route("/")
 def splash():
@@ -23,13 +27,19 @@ def splash():
 
 def shuffleFight():
   p = np.random.permutation(8)
-  global fightPhotos
-  global fightLabels
+  global fightPhotos, fightLabels
   fightPhotos = np.array(fightPhotos)
   fightLabels = np.array(fightLabels)
   fightPhotos = fightPhotos[p]
   fightLabels = fightLabels[p]
   
+def machineFight():
+  global machineFightTime, machineAccuracy
+  tf, predictions = time_and_prediction_for_images(fightPhotos)
+  accuracy = get_accuracy(predictions, fightLabels)
+  machineAccuracy = accuracy * len(fightLabels)
+  machineFightTime = tf
+    
 @app.route("/fight", methods=["GET"])
 def fight():
   shuffleFight()
@@ -37,20 +47,25 @@ def fight():
   
 @app.route("/fightPlay", methods=["POST"])
 def fightPlay():
+  global fightStartTime, fightEndTime, machineFightThread
   index = int(request.form.get('index'))
   correct = int(request.form.get('correct'))
   response = request.form.get('response')
   if index > 0 and response == fightLabels[index - 1]: 
     correct += 1;
   elif index == 0:
-    global startTime
-    startTime = time.time()
+    fightStartTime = time.time()
+    machineFightThread = threading.Thread(target=machineFight)
+    machineFightThread.start()
     
   if index == 8:
-    global endTime
-    endTime = time.time()
-    elapsedTime = endTime - startTime
-    return render_template("fightSummary.html", score=correct, time=elapsedTime)
+    fightEndTime = time.time()
+    elapsedTime = fightEndTime - fightStartTime
+    while (machineFightThread.is_alive()):
+      time.sleep(1)
+    
+    machineFightThread.join()
+    return render_template("fightSummary.html", score=correct, time=elapsedTime, maAcc = machineAccuracy, maTime = machineFightTime)
   
   return render_template("fightStart.html", nextIndex=index+1, imageLink=fightPhotos[index], score=correct)
 
@@ -58,7 +73,7 @@ def fightPlay():
 def test():
   return render_template("test.html")
   
-@app.route("/test_upload", methods=["POST"])
+@app.route("/testUpload", methods=["POST"])
 def test_upload():
   file = request.files['image']
   filename = os.path.join("static/uploads/", file.filename)
@@ -93,9 +108,9 @@ def time_and_prediction_for_images(images):
   t0 = time.time()
   predictions = []
   for img in images:
-    predictions += predict(img)
+    predictions.append(predict(img))
   tf = time.time() - t0
-  return [tf, predictions]
+  return tf, predictions
 
 def get_accuracy(pred, actual):
   pred_ = np.array(pred)
