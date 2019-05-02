@@ -9,6 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 from keras.utils import np_utils
 from keras import backend as K 
 
+#takes in image_url and adjusts to handle the image tensorization
 def load_image(img_url):
     img = load_img(img_url, target_size=(150,150))
     img_tensor = img_to_array(img)
@@ -16,6 +17,7 @@ def load_image(img_url):
     img_tensor /= 255.
     return img_tensor
 
+#predict function, outputs the string class
 def predict_on_image(model, img_url):
     img = load_image(img_url)
     output = np.array2string(model.predict(img)[0])
@@ -23,7 +25,7 @@ def predict_on_image(model, img_url):
     if (output == 0) : return "hotdog"
     else : return "legs"
 
-#takes in an img_url
+#passes the model in to predict_on_image
 def predict(img_url):
     model = load_model('./hd_or_legs.h5')
     print(predict_on_image(model, img_url))
