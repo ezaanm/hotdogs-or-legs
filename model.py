@@ -1,5 +1,3 @@
-# develop and train the model
-
 import numpy as np
 import os
 
@@ -11,23 +9,27 @@ from keras.utils import np_utils
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras import backend as K 
 
-#resource: https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d
 
-def load_and_train_model():
+def load_train_save():
+
+    #load in data
     x_train = "./data/train"
     x_test = "./data/test"
     epochs = 10
     batch_size = 16
 
+    #target img dimensions, training/testing sample details
     img_width, img_height = 150, 150
     nb_train_samples = 114 
     nb_test_samples = 4
 
+    #channel specs
     if K.image_data_format() == 'channels_first':
         input_shape = (3, img_width, img_height)
     else:
         input_shape = (img_width, img_height, 3)
 
+    #train the model
     model = Sequential()
     model.add(Convolution2D(32, (3,3), input_shape=input_shape))
     model.add(Activation('relu'))
@@ -48,8 +50,11 @@ def load_and_train_model():
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
 
+    #compile the model
     model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     
+    #used an ImageDataGenerator to prevent overfitting and improve generalization,
+    #as the number of images for training was pretty small
     train_datagen = ImageDataGenerator(
         rescale=1. / 255,
         shear_range=0.2,
@@ -81,9 +86,9 @@ def load_and_train_model():
         validation_steps = nb_test_samples // batch_size
     )
 
+    #save the model for flask app to ref
     model.save("hd_or_legs.h5")
 
     return model
 
-load_and_train_model()
-# predict_on_image('./data/test/hot_dogs/0001.jpg')
+load_train_save()
