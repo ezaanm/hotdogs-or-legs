@@ -19,15 +19,15 @@ app = Flask(__name__)
 lead = Leaderboard()
 
 fightPhotos = []
-fightLabels = ["hotdogs", "hotdogs", "hotdogs", "hotdogs", "legs", "legs", "legs", "legs"]
+fightLabels = ["hotdogs", "hotdogs", "legs", "hotdogs", "legs", "legs", "legs", "legs"]
 fightStartTime = 0
 fightEndTime = 0
-machineFightTime = 0;
-machineAccuracy = 4;
+machineFightTime = 0
+machineAccuracy = 4
 
 @app.route("/")
 def splash():
-  K.clear_session()
+  # K.clear_session()
   return render_template("splash.html")
 
 def shuffleFight():
@@ -58,7 +58,7 @@ def leaderboard():
   name = request.form.get('name')
   time = float(request.form.get('time'))
   lead.put(name, time)
-  K.clear_session()
+  # K.clear_session()
   return render_template("splash.html")
   
 @app.route("/fightPlay", methods=["POST"])
@@ -68,7 +68,7 @@ def fightPlay():
   correct = int(request.form.get('correct'))
   response = request.form.get('response')
   if index > 0 and response == fightLabels[index - 1]: 
-    correct += 1;
+    correct += 1
   elif index == 0:
     fightStartTime = time.time()
     machineFightThread = threading.Thread(target=machineFight)
@@ -103,6 +103,6 @@ def test_upload():
 
 if __name__ == "__main__":
   fightPhotos = [os.path.join("static/fight/", f) for f in os.listdir("static/fight/") if os.path.isfile(os.path.join("static/fight/", f))]
-  fightPhotos.remove("static/fight/.DS_Store")
+  #fightPhotos.remove("static/fight/.DS_Store")
   fightPhotos.sort()
   app.run(port=5000, debug=True)
