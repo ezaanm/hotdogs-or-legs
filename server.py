@@ -43,6 +43,9 @@ def test_upload():
 #  do some ML on the file and get classification
   
   classification = "100p a hot dog"
+  os.remove(filename)
+  
+  return render_template("test.html", classification = classification)
 
   #call predict with the image route from wherever u need to get the response
   #"hotdogs" or "legs"
@@ -62,15 +65,22 @@ def predict(img_url):
     if (output == 0) : return "hotdogs"
     else : return "legs"
 
-#example
-#predict('./data/train/legs/0061.jpg')
+#returns time and predictions in a list
+def time_and_prediction_for_images(images):
+  t0 = time.time()
+  predictions = []
+  for img in images:
+    predictions += predict(img)
+  tf = time.time() - t0
+  return [tf, predictions]
+
+def get_accuracy(pred, actual):
+  pred_ = np.array(pred)
+  actual_ = np.array(actual)
+  accuracy = (np.sum(pred_ == actual_))/len(pred_)
+  return accuracy
   
 #  once classified, delete image
-  
-  os.remove(filename)
-  
-  return render_template("test.html", classification = classification)
-
 
 if __name__ == "__main__":
   app.run(port=5000, debug=True)
