@@ -94,6 +94,7 @@ def test_upload():
   file.save(filename)
   
   classification = predict(filename)
+  K.clear_session()
 #  os.remove(filename) - we are going to learn about your dog preferences and target u with ads!
   
   return render_template("test.html", imageLink = filename, classification = classification)
