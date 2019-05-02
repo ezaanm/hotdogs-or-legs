@@ -42,7 +42,7 @@ restarts everytime the server restarts
 Triggers the start of the game and loads the next image from the previously shuffled array
 as you click a "hotdogs" or "legs" button, and updates your score if chosen correctly
 
-# post '/testUpload'
+## post '/testUpload'
 triggering this uploads the photo you have selected on your computer and runs the 
 classification algorithm on it and displays the results
 
@@ -64,5 +64,4 @@ yeezy szn approachin
 yeehaw
 got the horses in the BACK
 
-
-## zoo wee mama
+# zoo wee mama
